@@ -1,0 +1,11 @@
+﻿Epoch 01 | train loss 0.5270 | val AUC 0.8832
+Epoch 02 | train loss 0.3795 | val AUC 0.8889
+Epoch 03 | train loss 0.2911 | val AUC 0.8861
+Epoch 04 | train loss 0.2196 | val AUC 0.8738
+Epoch 05 | train loss 0.1774 | val AUC 0.8803
+Epoch 06 | train loss 0.1480 | val AUC 0.8868
+Epoch 07 | train loss 0.1112 | val AUC 0.8876
+Epoch 08 | train loss 0.0958 | val AUC 0.8925  (best, saved)
+Epoch 09 | train loss 0.0838 | val AUC 0.8827
+Epoch 10 | train loss 0.0811 | val AUC 0.8877
+Best validation AUC: 0.8925
