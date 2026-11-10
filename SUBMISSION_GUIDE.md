@@ -8,23 +8,30 @@ predictions, or inference interface.
 - Source code: this repository
 - PyTorch checkpoint: `model_weights.pt`
 - Prediction file: `predictions.csv`
-- Existing approach and results: `README.md` and `report.pdf`
+- Approach and results: `README.md` and [`TECHNICAL_REPORT.md`](./TECHNICAL_REPORT.md)
 - Training log: `training_log.txt`
 
-The reported validation AUC is the value recorded in the existing training log.
-No additional metrics or official-test performance are claimed here. The
-official dataset and test images are not included in this repository, so the
-validation and official-test commands below must be run where those files are
-available.
+Use the new technical report for the report deliverable; the older `report.pdf`
+is not a substitute for the organizer's minimum four-page report requirement.
+
+The historical training log records an AUC of 0.8925. The checkpoint was
+re-evaluated on the organizer archive, and measured validation results are
+documented in `README.md` and `TECHNICAL_REPORT.md`. The official dataset is
+not included in the public repository; the checks were run locally against
+the downloaded organizer archive.
 
 ## Evaluate the model on a validation split of the provided training data
 
-Arrange the provided training images as:
+Extract `hackathon_dataset.zip` so the organizer's metadata and images are:
 
 ```text
-train/
-  real/
-  fake/
+hackathon_dataset/
+  train/
+    real/
+    fake/
+  test/
+    images/
+  train_metadata.csv
 ```
 
 Install the pinned dependencies and run the evaluator from the repository
@@ -32,7 +39,7 @@ directory:
 
 ```powershell
 python -m pip install -r requirements.txt
-python .\evaluate_validation.py --data-dir .\train --weights .\model_weights.pt
+python .\evaluate_validation.py --data-dir .\hackathon_dataset --weights .\model_weights.pt
 ```
 
 The evaluator uses the required stratified 80/20 split with
@@ -51,7 +58,7 @@ Keep the required inference arguments and output columns unchanged. Write to a
 new file first so the existing `predictions.csv` is preserved:
 
 ```powershell
-python .\inference_script.py --test_dir .\test\images --weights .\model_weights.pt --output .\submission_predictions.csv
+python .\inference_script.py --test_dir .\hackathon_dataset\test\images --weights .\model_weights.pt --output .\submission_predictions.csv
 ```
 
 Check that the generated CSV has exactly the columns
@@ -62,11 +69,15 @@ official one and the generated file passes those checks.
 You can run the non-destructive checker against the generated file:
 
 ```powershell
-python .\check_submission.py --test_dir .\test\images --predictions .\submission_predictions.csv
+python .\check_submission.py --test_dir .\hackathon_dataset\test\images --predictions .\submission_predictions.csv
 ```
 
 It verifies the exact column order, image IDs and row count, binary labels, and
 finite confidence values between 0 and 1. It does not modify the CSV or images.
+The existing `predictions.csv` has also been checked against the organizer
+test images and passes. It can be used as the required prediction artifact;
+the separately generated `submission_predictions.csv` was kept as a new file
+so the existing CSV remained untouched.
 
 ## Prepare the Drive submission
 
@@ -79,5 +90,5 @@ finite confidence values between 0 and 1. It does not modify the CSV or images.
 5. Open the folder link in a private/incognito browser window to verify access,
    then submit that link using the organizers' required channel.
 
-The repository is public, but Drive-folder access and official-test
-predictions must still be verified by the team before final submission.
+The repository is public. Drive-folder access must still be verified by the
+team before final submission.

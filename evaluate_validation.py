@@ -66,16 +66,52 @@ def build_model():
 
 
 def collect_records(data_dir):
+    metadata_path = data_dir / "train_metadata.csv"
+    train_dir = data_dir / "train"
     records = []
-    for label, folder in ((0, "real"), (1, "fake")):
-        image_dir = data_dir / folder
-        if not image_dir.is_dir():
-            raise FileNotFoundError(f"Expected class directory: {image_dir}")
-        records.extend(
-            (str(path), label)
-            for path in image_dir.iterdir()
+    if metadata_path.is_file() and train_dir.is_dir():
+        metadata = pd.read_csv(metadata_path)
+        if not {"image_id", "label"}.issubset(metadata.columns):
+            raise ValueError(f"{metadata_path} must contain image_id and label columns.")
+        if metadata["image_id"].isna().any() or metadata["image_id"].duplicated().any():
+            raise ValueError(f"{metadata_path} contains missing or duplicate image_id values.")
+        labels = pd.to_numeric(metadata["label"], errors="raise")
+        if not labels.isin((0, 1)).all():
+            raise ValueError(f"{metadata_path} labels must be 0 or 1.")
+
+        paths_by_id = {
+            path.stem: path
+            for path in train_dir.rglob("*")
+            if path.is_file() and path.suffix.lower() in IMG_EXTS
+        }
+        image_count = sum(
+            1
+            for path in train_dir.rglob("*")
             if path.is_file() and path.suffix.lower() in IMG_EXTS
         )
+        if len(paths_by_id) != image_count:
+            raise ValueError(f"{train_dir} contains duplicate image filename stems.")
+        missing_ids = set(metadata["image_id"].astype(str)) - paths_by_id.keys()
+        if missing_ids:
+            raise FileNotFoundError(
+                f"{len(missing_ids)} image_id values in {metadata_path} have no matching image in {train_dir}."
+            )
+        records = [
+            (str(paths_by_id[str(image_id)]), int(label))
+            for image_id, label in zip(metadata["image_id"], labels)
+        ]
+    else:
+        for label, folder in ((0, "real"), (1, "fake")):
+            image_dir = data_dir / folder
+            if not image_dir.is_dir():
+                raise FileNotFoundError(
+                    f"Expected {metadata_path} with {train_dir}, or class directory: {image_dir}"
+                )
+            records.extend(
+                (str(path), label)
+                for path in image_dir.iterdir()
+                if path.is_file() and path.suffix.lower() in IMG_EXTS
+            )
     if not records:
         raise ValueError(f"No supported images found under {data_dir}")
     frame = pd.DataFrame(records, columns=["path", "label"])
