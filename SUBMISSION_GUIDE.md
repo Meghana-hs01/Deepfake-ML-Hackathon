@@ -17,7 +17,7 @@ official dataset and test images are not included in this repository, so the
 validation and official-test commands below must be run where those files are
 available.
 
-## Verify the model on the official validation split
+## Evaluate the model on a validation split of the provided training data
 
 Arrange the provided training images as:
 

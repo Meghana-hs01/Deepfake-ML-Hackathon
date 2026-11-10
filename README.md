@@ -12,7 +12,7 @@ images are not model-performance results.
 |---|---|
 | AUC-ROC (clean validation) | 0.8925 (epoch 8, as recorded in `training_log.txt`) |
 | Accuracy / F1 (threshold 0.5) | Not measured |
-| Corruption robustness | Not measured on the official validation data |
+| Corruption robustness | Not measured on the provided-dataset validation split |
 | Decision threshold | 0.5 (fixed) |
 
 ## Environment
@@ -73,5 +73,5 @@ Only the officially provided dataset was used for training. No external data, an
 ## Limitations
 
 - Validation AUC plateaued around 0.88–0.89 from epoch 2 onward while training loss kept falling (0.53 to 0.08), which suggests overfitting.
-- Robustness to JPEG compression, blur, and resizing has not been measured on the official validation data.
-- Accuracy and F1 have not been measured on the official validation data.
+- Robustness to JPEG compression, blur, and resizing has not been measured on the provided-dataset validation split.
+- Accuracy and F1 have not been measured on the provided-dataset validation split.
