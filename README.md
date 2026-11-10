@@ -31,6 +31,13 @@ Use a new output filename to preserve the existing `predictions.csv`. Confirm
 that `test/images/` contains the official test images before generating the
 final submission predictions.
 
+To verify that the generated CSV matches the test-image directory without
+changing either file, run:
+
+```bash
+python check_submission.py --test_dir ./test/images/ --predictions ./submission_predictions.csv
+```
+
 ## Training
 
 ```bash

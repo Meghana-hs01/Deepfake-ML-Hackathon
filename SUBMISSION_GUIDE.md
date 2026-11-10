@@ -59,6 +59,15 @@ Check that the generated CSV has exactly the columns
 the submitted prediction file after confirming that the test directory is the
 official one and the generated file passes those checks.
 
+You can run the non-destructive checker against the generated file:
+
+```powershell
+python .\check_submission.py --test_dir .\test\images --predictions .\submission_predictions.csv
+```
+
+It verifies the exact column order, image IDs and row count, binary labels, and
+finite confidence values between 0 and 1. It does not modify the CSV or images.
+
 ## Prepare the Drive submission
 
 1. Create a Drive folder for the final team submission.
